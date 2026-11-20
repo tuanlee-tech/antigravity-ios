@@ -14,6 +14,7 @@
  */
 (function () {
   var chatCanvas = document.getElementById("chat-canvas");
+  var chatInner = document.getElementById("chat-inner") || chatCanvas;
   var promptInput = document.getElementById("prompt-input");
   var sendBtn = document.getElementById("send-btn");
   var modelSelect = document.getElementById("model-select");
@@ -21,6 +22,9 @@
   var accountBtn = document.getElementById("account-btn");
   var accountLabel = document.getElementById("account-label");
   var tierBadge = document.getElementById("tier-badge");
+  var authDot = document.getElementById("auth-dot");
+  var heroGoogleBtn = document.getElementById("hero-google-btn");
+  var welcomeCard = document.getElementById("welcome-card");
 
   var browsingPath = "";
   var conversationHistory = [];
@@ -128,18 +132,22 @@
     var infoBox = document.getElementById("account-info-box");
     if (!auth || !auth.access_token) {
       accountLabel.textContent = "Sign in";
-      if (tierBadge) tierBadge.textContent = "Chưa đăng nhập Google OAuth";
+      if (authDot) authDot.classList.remove("online");
+      if (heroGoogleBtn) heroGoogleBtn.style.display = "inline-flex";
+      if (tierBadge) tierBadge.textContent = "Sign in with your Google account to unlock models for your tier";
       if (infoBox) {
-        infoBox.innerHTML = "Chưa đăng nhập. Hãy bấm nút dưới để đăng nhập tài khoản Google của bạn.";
+        infoBox.innerHTML = "Not signed in. Click Sign in with Google below.";
       }
       return;
     }
 
     var email = (auth.user && auth.user.email) || "Google Account";
     var tier = auth.tierName || "Free Tier";
-    accountLabel.textContent = email.split("@")[0] + " • " + tier;
+    accountLabel.textContent = email.split("@")[0];
+    if (authDot) authDot.classList.add("online");
+    if (heroGoogleBtn) heroGoogleBtn.style.display = "none";
     if (tierBadge) {
-      tierBadge.textContent = "✅ " + email + " (" + tier + ")";
+      tierBadge.textContent = email + " · " + tier;
     }
     if (infoBox) {
       infoBox.innerHTML =
@@ -170,17 +178,19 @@
   }
 
   function appendUserMessage(text) {
+    if (welcomeCard) welcomeCard.style.display = "none";
     var div = document.createElement("div");
     div.className = "msg user";
     div.textContent = text;
-    chatCanvas.appendChild(div);
+    chatInner.appendChild(div);
     chatCanvas.scrollTop = chatCanvas.scrollHeight;
   }
 
   function createAgentContainer() {
+    if (welcomeCard) welcomeCard.style.display = "none";
     var div = document.createElement("div");
     div.className = "msg agent";
-    chatCanvas.appendChild(div);
+    chatInner.appendChild(div);
     chatCanvas.scrollTop = chatCanvas.scrollHeight;
     return div;
   }
@@ -492,13 +502,27 @@
     }
   });
 
-  document.querySelectorAll(".chip[data-chip]").forEach(function (chip) {
+  document.querySelectorAll("[data-chip]").forEach(function (chip) {
     chip.addEventListener("click", function () {
       var prefix = chip.getAttribute("data-chip");
       promptInput.value = prefix + promptInput.value;
       promptInput.focus();
     });
   });
+
+  var toolbarFolderBtn = document.getElementById("toolbar-folder-btn");
+  if (toolbarFolderBtn) {
+    toolbarFolderBtn.addEventListener("click", function () {
+      document.getElementById("folder-modal").classList.add("open");
+      renderFolderModal(window.AgyGitShell.state.cwd);
+    });
+  }
+
+  if (heroGoogleBtn) {
+    heroGoogleBtn.addEventListener("click", function () {
+      document.getElementById("google-signin-btn").click();
+    });
+  }
 
   document.getElementById("chip-clone-sample").addEventListener("click", function () {
     promptInput.value = "Chạy lệnh git clone https://github.com/";

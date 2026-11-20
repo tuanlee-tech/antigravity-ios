@@ -5,57 +5,103 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>Antigravity for iOS</title>
+  <title>Antigravity</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
   <div class="app-shell">
-    <!-- Top Bar: Folder Picker, Dynamic Model Selector (by Google Account Tier), Google Sign-In -->
+    <!-- Minimalist Antigravity Header -->
     <header class="topbar">
-      <button class="folder-btn" id="open-folder-btn" title="Chọn hoặc tạo thư mục Workspace">
-        <span class="folder-icon">📂</span>
-        <span class="folder-label" id="active-folder-label">~/Documents/projects</span>
-      </button>
+      <div class="topbar-left">
+        <button class="icon-btn" id="open-folder-btn" title="Open Workspace Folder">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          <span class="folder-label" id="active-folder-label">projects</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+      </div>
+
+      <div class="topbar-center">
+        <span class="brand-mark">Antigravity</span>
+      </div>
 
       <div class="topbar-right">
-        <select class="model-select" id="model-select" title="Chọn Model theo Tier tài khoản Google">
-          <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
-        </select>
-        <button class="account-btn" id="account-btn" title="Đăng nhập tài khoản Google Antigravity">
+        <button class="account-pill" id="account-btn">
+          <span class="status-dot" id="auth-dot"></span>
           <span id="account-label">Sign in</span>
         </button>
       </div>
     </header>
 
-    <!-- Chat & /grill-me Interactive Stream -->
+    <!-- Main Chat Canvas (Centered like original Antigravity) -->
     <main class="chat-canvas" id="chat-canvas">
-      <div class="welcome-card" id="welcome-card">
-        <div class="welcome-logo">⚡</div>
-        <h2>Antigravity for iOS</h2>
-        <p class="tier-badge" id="tier-badge">Chưa đăng nhập Google OAuth</p>
-        <p class="welcome-desc">
-          1. Bấm <b>Sign in</b> ở góc phải trên để đăng nhập tài khoản Google (tự động mở khóa danh sách Model theo gói tài khoản của bạn).<br/>
-          2. Nhắn vào khung chat: <i>"Chạy lệnh git clone https://github.com/user/repo.git về máy"</i>.<br/>
-          3. Bấm <b>📂 Open Folder</b> ở góc trái trên để chọn thư mục vừa clone và bắt đầu <b>/grill-me</b>!
-        </p>
+      <div class="chat-inner" id="chat-inner">
+        <div class="welcome-hero" id="welcome-card">
+          <div class="agy-logo-wrap">
+            <svg width="42" height="42" viewBox="0 0 48 48" fill="none">
+              <defs>
+                <linearGradient id="agyGrad" x1="8" y1="6" x2="40" y2="42" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#60A5FA"/>
+                  <stop offset="50%" stop-color="#A78BFA"/>
+                  <stop offset="100%" stop-color="#34D399"/>
+                </linearGradient>
+              </defs>
+              <path d="M24 6L8 40h6.8l3.5-7.8h11.4L33.2 40H40L24 6zm-3.2 20.6L24 19.2l3.2 7.4h-6.4z" fill="url(#agyGrad)"/>
+            </svg>
+          </div>
+          <h1 class="welcome-title">Where should we start?</h1>
+          <p class="welcome-sub" id="tier-badge">Sign in with your Google account to unlock models for your tier</p>
+
+          <button class="google-hero-btn" id="hero-google-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+            </svg>
+            <span>Sign in with Google</span>
+          </button>
+
+          <div class="starter-grid">
+            <button class="starter-card" id="chip-clone-sample">
+              <span class="starter-title">Clone a repository</span>
+              <span class="starter-desc">git clone directly to device storage</span>
+            </button>
+            <button class="starter-card" data-chip="/grill-me ">
+              <span class="starter-title">Design with /grill-me</span>
+              <span class="starter-desc">Interactive 1-tap architecture Q&A</span>
+            </button>
+            <button class="starter-card" id="chip-files-view">
+              <span class="starter-title">Open local folder</span>
+              <span class="starter-desc">Select or create a workspace folder</span>
+            </button>
+          </div>
+        </div>
       </div>
     </main>
 
-    <!-- Minimalist 1-Thumb Prompt Footer -->
-    <footer class="prompt-footer">
-      <div class="quick-chips">
-        <button class="chip" data-chip="/grill-me ">🔥 /grill-me</button>
-        <button class="chip" data-chip="/plan ">🗺️ /plan</button>
-        <button class="chip" id="chip-clone-sample">🐙 Git Clone</button>
-        <button class="chip" id="chip-files-view">📁 Xem Files</button>
-      </div>
-      <div class="input-row">
+    <!-- Antigravity Composer Box -->
+    <footer class="composer-wrap">
+      <div class="composer-box">
         <textarea
           id="prompt-input"
           rows="1"
-          placeholder="Nhắn lệnh git clone hoặc bấm /grill-me (hỗ trợ Mic bàn phím iOS)..."
+          placeholder="Ask Antigravity anything, or type /grill-me..."
         ></textarea>
-        <button class="send-btn" id="send-btn" aria-label="Gửi">➤</button>
+        <div class="composer-toolbar">
+          <div class="composer-left">
+            <button class="tool-btn" id="toolbar-folder-btn" title="Open Folder">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+            <button class="slash-pill" data-chip="/grill-me ">/grill-me</button>
+            <button class="slash-pill" data-chip="/plan ">/plan</button>
+            <select class="model-select" id="model-select" title="Model">
+              <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+            </select>
+          </div>
+          <button class="send-btn" id="send-btn" aria-label="Send">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19V5M5 12l7-7 7 7"/></svg>
+          </button>
+        </div>
       </div>
     </footer>
   </div>
@@ -64,41 +110,47 @@
   <div class="modal-backdrop" id="folder-modal">
     <div class="modal-sheet">
       <div class="modal-header">
-        <h3>📂 Chọn Thư mục Workspace</h3>
-        <button class="close-btn" id="close-folder-modal">Đóng</button>
+        <h3>Open Workspace</h3>
+        <button class="close-btn" id="close-folder-modal">Done</button>
       </div>
       <div class="folder-path-bar" id="modal-current-path">~/Documents/projects</div>
 
       <div class="folder-actions">
-        <button class="action-btn primary" id="select-this-folder-btn">✅ Chọn thư mục hiện tại làm Workspace</button>
+        <button class="action-btn primary" id="select-this-folder-btn">Open Current Folder</button>
         <div class="new-folder-row">
-          <input type="text" id="new-folder-input" placeholder="Tên thư mục mới (New Folder)..." />
-          <button class="action-btn" id="create-folder-btn">+ New Folder</button>
+          <input type="text" id="new-folder-input" placeholder="New folder name..." />
+          <button class="action-btn" id="create-folder-btn">New Folder</button>
         </div>
-        <button class="action-btn secondary" id="ios-native-picker-btn">📱 Mở từ ứng dụng Tệp của iOS (Files App)</button>
+        <button class="action-btn secondary" id="ios-native-picker-btn">Browse in iOS Files App</button>
       </div>
 
       <div class="folder-list" id="folder-list"></div>
     </div>
   </div>
 
-  <!-- Account & GitHub Token Modal -->
+  <!-- Account Modal -->
   <div class="modal-backdrop" id="account-modal">
     <div class="modal-sheet">
       <div class="modal-header">
-        <h3>🔑 Tài khoản Google Antigravity</h3>
-        <button class="close-btn" id="close-account-modal">Đóng</button>
+        <h3>Account</h3>
+        <button class="close-btn" id="close-account-modal">Done</button>
       </div>
       <div id="account-info-box" class="account-box"></div>
-      <button class="action-btn primary" id="google-signin-btn">🌐 Sign in with Google</button>
-      <button class="action-btn secondary" id="refresh-models-btn" style="margin-top:8px;">🔄 Làm mới danh sách Model theo Tier</button>
+      <button class="google-hero-btn full" id="google-signin-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        <span>Sign in with Google</span>
+      </button>
+      <button class="action-btn secondary" id="refresh-models-btn" style="margin-top:8px; width:100%;">Refresh Available Models</button>
 
-      <div style="margin-top:16px; border-top:1px solid rgba(148,163,184,0.18); padding-top:14px;">
-        <label style="font-size:12px; color:#94a3b8; display:block; margin-bottom:6px;">
-          🐙 GitHub Personal Access Token (Tùy chọn - Dùng để git clone repo Private & git push):
-        </label>
+      <div class="divider-section">
+        <label class="field-label">GitHub Personal Access Token (Optional — for private clone &amp; push)</label>
         <input type="password" id="github-token-input" class="text-input" placeholder="ghp_xxxxxxxxxxxx" />
-        <button class="action-btn" id="save-gh-token-btn" style="margin-top:8px; width:100%;">Lưu GitHub Token</button>
+        <button class="action-btn" id="save-gh-token-btn" style="margin-top:8px; width:100%;">Save Token</button>
       </div>
     </div>
   </div>
