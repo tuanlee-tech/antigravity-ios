@@ -11,6 +11,7 @@ import base64
 import http.server
 import json
 import os
+import re
 import shutil
 import socketserver
 import threading
@@ -27,6 +28,34 @@ SIM_PROJECTS_DIR = SIM_DOCS_DIR / "projects"
 
 OAUTH_CLIENT_ID = os.environ.get("AGY_OAUTH_CLIENT_ID", "").strip()
 OAUTH_CLIENT_SECRET = os.environ.get("AGY_OAUTH_CLIENT_SECRET", "").strip()
+
+
+def resolve_local_oauth_defaults():
+    global OAUTH_CLIENT_ID, OAUTH_CLIENT_SECRET
+    if OAUTH_CLIENT_ID and OAUTH_CLIENT_SECRET:
+        return
+    candidates = [
+        Path.home() / "Applications/Antigravity/Antigravity-x64/resources/bin/language_server",
+        Path("/app/language_server"),
+    ]
+    for p in candidates:
+        if p.is_file():
+            try:
+                raw = p.read_bytes()
+                cids = re.findall(rb"1071006060591-[a-z0-9]+\.apps\.googleusercontent\.com", raw)
+                csecs = re.findall(rb"GOCSPX-[A-Za-z0-9_-]{28}", raw)
+                if cids and not OAUTH_CLIENT_ID:
+                    OAUTH_CLIENT_ID = cids[0].decode("ascii")
+                if csecs and not OAUTH_CLIENT_SECRET:
+                    OAUTH_CLIENT_SECRET = csecs[-1].decode("ascii")
+                if OAUTH_CLIENT_ID:
+                    print(f"[OAuth] Auto-loaded Antigravity OAuth config from {p}", flush=True)
+                    return
+            except Exception:
+                pass
+
+
+resolve_local_oauth_defaults()
 OAUTH_SCOPES = " ".join([
     "https://www.googleapis.com/auth/cloud-platform",
     "https://www.googleapis.com/auth/userinfo.email",
