@@ -1,0 +1,95 @@
+name: Build and Release Antigravity iOS (.ipa)
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Release Tag (e.g. v2.4.1)'
+        required: false
+        default: 'v2.4.1'
+
+permissions:
+  contents: write
+
+jobs:
+  build-ipa:
+    name: Build Unsigned / Sideloadable .ipa on macOS
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen & ldid
+        run: |
+          brew install xcodegen ldid
+
+      - name: Inject Optional OAuth Build Secrets into Info.plist
+        env:
+          AGY_OAUTH_CLIENT_ID: ${{ secrets.AGY_OAUTH_CLIENT_ID }}
+          AGY_OAUTH_CLIENT_SECRET: ${{ secrets.AGY_OAUTH_CLIENT_SECRET }}
+        run: |
+          if [ -n "$AGY_OAUTH_CLIENT_ID" ]; then
+            /usr/libexec/PlistBuddy -c "Add :AGYOAuthClientId string $AGY_OAUTH_CLIENT_ID" ios/AntigravityIOS/Info.plist || \
+            /usr/libexec/PlistBuddy -c "Set :AGYOAuthClientId $AGY_OAUTH_CLIENT_ID" ios/AntigravityIOS/Info.plist
+          fi
+          if [ -n "$AGY_OAUTH_CLIENT_SECRET" ]; then
+            /usr/libexec/PlistBuddy -c "Add :AGYOAuthClientSecret string $AGY_OAUTH_CLIENT_SECRET" ios/AntigravityIOS/Info.plist || \
+            /usr/libexec/PlistBuddy -c "Set :AGYOAuthClientSecret $AGY_OAUTH_CLIENT_SECRET" ios/AntigravityIOS/Info.plist
+          fi
+
+      - name: Generate Xcode Project
+        working-directory: ios
+        run: |
+          xcodegen generate
+
+      - name: Build iOS App Bundle (arm64)
+        working-directory: ios
+        run: |
+          xcodebuild \
+            -project AntigravityIOS.xcodeproj \
+            -scheme AntigravityIOS \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            ARCHS=arm64 \
+            ONLY_ACTIVE_ARCH=NO \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            AD_HOC_CODE_SIGNING_ALLOWED=YES \
+            clean build
+
+      - name: Package & Ad-Hoc Sign antigravity-ios.ipa
+        run: |
+          mkdir -p dist/Payload
+          APP_PATH=$(find ios/build -name "Antigravity.app" -type d | head -n 1)
+          cp -R "$APP_PATH" dist/Payload/Antigravity.app
+          ldid -S dist/Payload/Antigravity.app/Antigravity
+          cd dist
+          zip -r9 antigravity-ios.ipa Payload
+          shasum -a 256 antigravity-ios.ipa > SHA256SUMS.txt
+          ls -lh antigravity-ios.ipa
+
+      - name: Upload .ipa Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: antigravity-ios-ipa
+          path: |
+            dist/antigravity-ios.ipa
+            dist/SHA256SUMS.txt
+
+      - name: Publish GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag_name || github.ref_name }}
+          name: "Antigravity for iOS (${{ github.event.inputs.tag_name || github.ref_name }})"
+          files: |
+            dist/antigravity-ios.ipa
+            dist/SHA256SUMS.txt

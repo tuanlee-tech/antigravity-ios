@@ -1,0 +1,7 @@
+.DS_Store
+.ios_simulator_documents/
+ios/build/
+ios/*.xcodeproj/
+dist/
+__pycache__/
+*.pyc

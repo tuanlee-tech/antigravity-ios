@@ -1,0 +1,33 @@
+name: AntigravityIOS
+options:
+  bundleIdPrefix: com.agy
+  deploymentTarget:
+    iOS: "15.0"
+  xcodeVersion: "15.0"
+
+targets:
+  AntigravityIOS:
+    type: application
+    platform: iOS
+    deploymentTarget: "15.0"
+    sources:
+      - path: AntigravityIOS
+        excludes:
+          - Info.plist
+      - path: ../web
+        type: folder
+        buildPhase: resources
+    info:
+      path: AntigravityIOS/Info.plist
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.agy.ios
+        PRODUCT_NAME: Antigravity
+        MARKETING_VERSION: "2.4.1"
+        CURRENT_PROJECT_VERSION: "17"
+        SWIFT_VERSION: "5.9"
+        TARGETED_DEVICE_FAMILY: "1,2"
+        CODE_SIGN_IDENTITY: ""
+        CODE_SIGNING_REQUIRED: "NO"
+        CODE_SIGNING_ALLOWED: "NO"
+        AD_HOC_CODE_SIGNING_ALLOWED: "YES"
