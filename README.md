@@ -36,6 +36,45 @@
 
 ---
 
+### 📲 Hướng dẫn Cài đặt `antigravity-ios.ipa` lên iPhone / iPad (Không cần App Store, không cần Jailbreak)
+
+#### Bước 0: Tải file `.ipa`
+Tải file mới nhất tại đây: [**`antigravity-ios.ipa`**](https://github.com/tuanlee-tech/antigravity-ios/releases/latest/download/antigravity-ios.ipa)
+
+Chọn **1 trong 3 cách** dưới đây tùy thiết bị của bạn:
+
+#### Cách 1: Dùng Sideloadly (Dễ nhất — Windows & macOS, Miễn phí)
+1. Tải và cài đặt [**Sideloadly**](https://sideloadly.io/) trên máy tính (Windows cần cài thêm iTunes & iCloud bản tải từ web Apple, không phải bản Microsoft Store).
+2. Cắm cáp nối iPhone/iPad với máy tính và bấm **Tin cậy (Trust)** trên màn hình iPhone.
+3. Mở Sideloadly ➔ kéo thả file **`antigravity-ios.ipa`** vào biểu tượng IPA ➔ nhập tài khoản Apple ID của bạn ➔ bấm **Start**.
+4. Sau khi báo **Done**, trên iPhone làm thêm 2 thao tác mở khóa của Apple:
+   - Vào **Cài đặt (Settings) ➔ Cài đặt chung (General) ➔ Quản lý VPN & Thiết bị (VPN & Device Management)** ➔ bấm vào email Apple ID của bạn ➔ chọn **Tin cậy (Trust)**.
+   - *(Với iOS 16 trở lên)*: Vào **Cài đặt ➔ Quyền riêng tư & Bảo mật (Privacy & Security) ➔ Chế độ nhà phát triển (Developer Mode)** ➔ Bật lên và khởi động lại máy.
+   - *(Lưu ý: Apple ID miễn phí cần cắm Sideloadly ký lại sau mỗi 7 ngày, hoặc bật **Wi-Fi Refresh** trong Sideloadly để tự động gia hạn qua Wi-Fi).*
+
+#### Cách 2: Dùng SideStore / AltStore (Tự gia hạn ngay trên iPhone, không cần cắm máy tính)
+1. Nếu iPhone của bạn đã cài sẵn [**SideStore**](https://sidestore.io/) hoặc [**AltStore**](https://altstore.io/):
+2. Mở Safari trên iPhone, tải trực tiếp [**`antigravity-ios.ipa`**](https://github.com/tuanlee-tech/antigravity-ios/releases/latest/download/antigravity-ios.ipa).
+3. Mở app **SideStore / AltStore** ➔ tab **My Apps** ➔ bấm dấu **`+`** ở góc trên ➔ chọn file `antigravity-ios.ipa` vừa tải là xong.
+
+#### Cách 3: Cài vĩnh viễn (Không giới hạn 7 ngày)
+- **TrollStore (iOS 14.0 – 17.0):** Tải `antigravity-ios.ipa` bằng Safari trên iPhone ➔ bấm **Chia sẻ (Share) ➔ TrollStore** ➔ **Install**.
+- **ESign / Scarlet / Chứng chỉ P12:** Nhập file `antigravity-ios.ipa` vào ESign ➔ ký bằng chứng chỉ cá nhân ➔ cài đặt trực tiếp trên iPhone.
+
+---
+
+### 🚀 Bắt đầu Vibecode trên iPhone trong 3 bước
+
+1. **Đăng nhập Google:** Mở app **Antigravity** ➔ bấm **Sign in** (góc phải trên) ➔ **🌐 Sign in with Google**. App tự động nhận diện gói tài khoản (Free / Pro / Ultra) và nạp đúng danh sách Model khả dụng của bạn.
+2. **Clone repo ngay trong khung chat:** Nhắn trực tiếp vào khung chat:
+   > *"Chạy lệnh `git clone https://github.com/<user>/<repo>.git`"*
+   *(Nếu là repo Private hoặc cần `git push`, thêm GitHub Personal Access Token trong mục Account ở góc phải trên).*
+3. **Mở thư mục & Vibecode với `/grill-me`:**
+   - Bấm **📂 Open Folder** ở góc trái trên ➔ chọn thư mục `<repo>` vừa clone (hoặc bấm **`+ New Folder`** / **Mở từ ứng dụng Tệp iOS**).
+   - Bấm nút nhanh **🔥 `/grill-me`** và dùng phím **Micro trên bàn phím iPhone** để đọc ý tưởng, chọn phương án bằng 1 ngón tay và xem diff trực tiếp!
+
+---
+
 ### Cấu trúc Dự án
 
 ```text
