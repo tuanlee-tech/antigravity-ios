@@ -545,20 +545,10 @@
   });
 
   accountBtn.addEventListener("click", function () {
-    var ocfg = window.AgyCloudCode.getOAuthConfig();
-    document.getElementById("oauth-cid-input").value = ocfg.clientId || "";
-    document.getElementById("oauth-csec-input").value = ocfg.clientSecret || "";
     document.getElementById("github-token-input").value =
       localStorage.getItem("agy_github_token") || "";
     updateAuthUI();
     document.getElementById("account-modal").classList.add("open");
-  });
-
-  document.getElementById("save-oauth-cfg-btn").addEventListener("click", function () {
-    var cid = document.getElementById("oauth-cid-input").value.trim();
-    var csec = document.getElementById("oauth-csec-input").value.trim();
-    window.AgyCloudCode.saveUserOAuthConfig(cid, csec);
-    alert("Đã lưu cấu hình OAuth!");
   });
 
   document.getElementById("close-account-modal").addEventListener("click", function () {
@@ -575,7 +565,7 @@
     } catch (e) {
       alert("Đăng nhập thất bại: " + (e.message || e));
     } finally {
-      btn.textContent = "🌐 Đăng nhập với Google (Antigravity OAuth)";
+      btn.textContent = "🌐 Sign in with Google";
     }
   });
 

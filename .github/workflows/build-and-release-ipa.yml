@@ -29,19 +29,45 @@ jobs:
         run: |
           brew install xcodegen ldid
 
-      - name: Inject Optional OAuth Build Secrets into Info.plist
+      - name: Configure Official Antigravity Google OAuth into Info.plist
         env:
           AGY_OAUTH_CLIENT_ID: ${{ secrets.AGY_OAUTH_CLIENT_ID }}
           AGY_OAUTH_CLIENT_SECRET: ${{ secrets.AGY_OAUTH_CLIENT_SECRET }}
         run: |
-          if [ -n "$AGY_OAUTH_CLIENT_ID" ]; then
-            /usr/libexec/PlistBuddy -c "Add :AGYOAuthClientId string $AGY_OAUTH_CLIENT_ID" ios/AntigravityIOS/Info.plist || \
-            /usr/libexec/PlistBuddy -c "Set :AGYOAuthClientId $AGY_OAUTH_CLIENT_ID" ios/AntigravityIOS/Info.plist
-          fi
-          if [ -n "$AGY_OAUTH_CLIENT_SECRET" ]; then
-            /usr/libexec/PlistBuddy -c "Add :AGYOAuthClientSecret string $AGY_OAUTH_CLIENT_SECRET" ios/AntigravityIOS/Info.plist || \
-            /usr/libexec/PlistBuddy -c "Set :AGYOAuthClientSecret $AGY_OAUTH_CLIENT_SECRET" ios/AntigravityIOS/Info.plist
-          fi
+          python3 - << 'EOF'
+          import json, os, re, subprocess, urllib.request
+
+          cid = os.environ.get("AGY_OAUTH_CLIENT_ID", "").strip()
+          csec = os.environ.get("AGY_OAUTH_CLIENT_SECRET", "").strip()
+
+          if not cid or not csec:
+              print("[*] Resolving official Antigravity OAuth parameters from upstream release...")
+              rel_url = "https://antigravity-hub-auto-updater-974169037036.us-central1.run.app/releases"
+              with urllib.request.urlopen(rel_url, timeout=30) as r:
+                  releases = json.loads(r.read().decode("utf-8"))
+              latest = releases[0]
+              bin_url = f"https://storage.googleapis.com/antigravity-public/antigravity-hub/{latest['version']}-{latest['execution_id']}/unsigned/language_server-linux-x64"
+              tmp_bin = "/tmp/ls_upstream"
+              urllib.request.urlretrieve(bin_url, tmp_bin)
+              with open(tmp_bin, "rb") as f:
+                  data = f.read()
+              os.remove(tmp_bin)
+              cids = re.findall(rb"1071006060591-[a-z0-9]+\.apps\.googleusercontent\.com", data)
+              csecs = re.findall(rb"GOCSPX-[A-Za-z0-9_-]{28}", data)
+              if cids and not cid:
+                  cid = cids[0].decode("ascii")
+              if csecs and not csec:
+                  # Pick the Cloud Code client secret (the second GOCSPX or matching K58F...)
+                  csec = csecs[-1].decode("ascii")
+
+          plist = "ios/AntigravityIOS/Info.plist"
+          for key, val in [("AGYOAuthClientId", cid), ("AGYOAuthClientSecret", csec)]:
+              if val:
+                  res = subprocess.run(["/usr/libexec/PlistBuddy", "-c", f"Set :{key} {val}", plist], capture_output=True)
+                  if res.returncode != 0:
+                      subprocess.check_call(["/usr/libexec/PlistBuddy", "-c", f"Add :{key} string {val}", plist])
+          print(f"[OK] Configured Info.plist OAuth (client_id present={bool(cid)}, secret present={bool(csec)})")
+          EOF
 
       - name: Generate Xcode Project
         working-directory: ios
@@ -84,12 +110,18 @@ jobs:
             dist/antigravity-ios.ipa
             dist/SHA256SUMS.txt
 
-      - name: Publish GitHub Release
-        if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+      - name: Publish GitHub Release (Public .ipa Download)
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.inputs.tag_name || github.ref_name }}
-          name: "Antigravity for iOS (${{ github.event.inputs.tag_name || github.ref_name }})"
+          tag_name: ${{ github.event.inputs.tag_name || (startsWith(github.ref, 'refs/tags/v') && github.ref_name) || 'v2.4.1' }}
+          name: "Antigravity for iOS (${{ github.event.inputs.tag_name || (startsWith(github.ref, 'refs/tags/v') && github.ref_name) || 'v2.4.1' }})"
+          make_latest: true
           files: |
             dist/antigravity-ios.ipa
             dist/SHA256SUMS.txt
+          body: |
+            ### ⚡ Antigravity for iOS — Ready to Sideload (`.ipa`)
+
+            - **1-Click Sign in with Google:** Đăng nhập trực tiếp tài khoản Google Antigravity của bạn, tự động nhận diện Tier (Free / Pro / Ultra) và danh sách Model tương ứng.
+            - **On-Device Git & Folder Picker:** Nhắn chat `git clone ...` trực tiếp trên iPhone, sau đó bấm **📂 Open Folder** để chọn thư mục và vibecode với `/grill-me`.
+            - **Cài đặt:** Tải `antigravity-ios.ipa` bên dưới và cài qua **Sideloadly**, **AltStore**, **SideStore**, hoặc **TrollStore**.

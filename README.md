@@ -5,7 +5,14 @@
 
   [![iOS](https://img.shields.io/badge/iOS-15.0%2B-000000?style=flat-square&logo=apple&logoColor=white)](https://apple.com/ios)
   [![Arch](https://img.shields.io/badge/ARM64-Apple_Silicon-blue?style=flat-square)](https://developer.apple.com)
+  [![Download IPA](https://img.shields.io/badge/Download-antigravity--ios.ipa-0284c7?style=flat-square&logo=apple&logoColor=white)](https://github.com/tuanlee-tech/antigravity-ios/releases/latest/download/antigravity-ios.ipa)
+  [![Releases](https://img.shields.io/github/v/release/tuanlee-tech/antigravity-ios?style=flat-square&color=blueviolet)](https://github.com/tuanlee-tech/antigravity-ios/releases/latest)
   [![License](https://img.shields.io/badge/License-Apache_2.0-orange?style=flat-square)](LICENSE)
+
+  <br/>
+
+  ### ⬇️ [Tải trực tiếp `antigravity-ios.ipa` (Bản mới nhất)](https://github.com/tuanlee-tech/antigravity-ios/releases/latest/download/antigravity-ios.ipa)
+  *(Hoặc xem tất cả các bản phát hành tại [GitHub Releases](https://github.com/tuanlee-tech/antigravity-ios/releases/latest))*
 
 </div>
 
